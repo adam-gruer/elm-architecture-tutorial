@@ -1,7 +1,7 @@
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 import String exposing (length)
 import Regex exposing (..)
 
@@ -23,12 +23,13 @@ type alias Model =
   , age : String
   , password : String
   , passwordAgain : String
+  , showValidation: Bool
   }
 
 
 init : Model
 init =
-  Model "" "" "" ""
+  Model "" "" "" "" True
 
 
 
@@ -40,7 +41,8 @@ type Msg
   | Age String
   | Password String
   | PasswordAgain String
-  
+  | Validate
+
 
 
 update : Msg -> Model -> Model
@@ -56,6 +58,9 @@ update msg model =
     PasswordAgain password ->
       { model | passwordAgain = password }
 
+    Validate ->
+      { model | showValidation = False }
+
 
 
 -- VIEW
@@ -68,6 +73,7 @@ view model =
     , viewInput "text" "Age" model.age Age
     , viewInput "password" "Password" model.password Password
     , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
+    , button [ onClick Validate  ] [ text "submit"]
     , viewValidation model
     ]
 
@@ -80,7 +86,7 @@ viewInput t p v toMsg =
 viewValidation : Model -> Html msg
 viewValidation model =
 
-  div []  
+  div [ hidden model.showValidation ]  
   [
     if not(Regex.contains lowerCase model.password) then
        div [ style "color" "red" ] [ text "Password needs at lease one lower case character" ]
