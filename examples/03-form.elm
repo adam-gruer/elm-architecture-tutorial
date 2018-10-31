@@ -40,6 +40,7 @@ type Msg
   | Age String
   | Password String
   | PasswordAgain String
+  
 
 
 update : Msg -> Model -> Model
